@@ -3,11 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Runtime.InteropServices;
+
 
 public class LevelManagement : MonoBehaviour
 {
 
     public Button startButton = null;
+
+
+    [DllImport("__Internal")]
+    private static extern void sendResultJsonString(string str);
+
 
     void Start()
     {
@@ -18,6 +25,7 @@ public class LevelManagement : MonoBehaviour
 
         }
         unloadInactiveScenes();
+        WebGLInput.captureAllKeyboardInput = false;
 
     }
 
@@ -25,9 +33,10 @@ public class LevelManagement : MonoBehaviour
     {
         SceneManager.LoadScene("MainSzene");
         ScoreHandler.reset();
+        ScoreHandler.gameStart();
 
         unloadInactiveScenes();
-
+        WebGLInput.captureAllKeyboardInput = true;
     }
 
     public void GameOver()
@@ -35,6 +44,10 @@ public class LevelManagement : MonoBehaviour
 
         SceneManager.LoadScene("GameOverSzene");
         unloadInactiveScenes();
+        ScoreHandler.gameOver();
+        sendResultJsonString(ScoreHandler.getJSONScoreString());
+        WebGLInput.captureAllKeyboardInput = false;
+
     }
 
     private void unloadInactiveScenes()
