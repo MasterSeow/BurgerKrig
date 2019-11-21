@@ -22,21 +22,27 @@ public class LevelManagement : MonoBehaviour
         {
             Button btn = startButton.GetComponent<Button>();
             btn.onClick.AddListener(StartGame);
+            #if !UNITY_EDITOR && UNITY_WEBGL
+                WebGLInput.captureAllKeyboardInput = false;
+            #endif
 
         }
         unloadInactiveScenes();
-        WebGLInput.captureAllKeyboardInput = false;
 
     }
 
     public void StartGame()
     {
+
+        #if !UNITY_EDITOR && UNITY_WEBGL
+            WebGLInput.captureAllKeyboardInput = true;
+        #endif
+
         SceneManager.LoadScene("MainSzene");
         ScoreHandler.reset();
         ScoreHandler.gameStart();
 
         unloadInactiveScenes();
-        WebGLInput.captureAllKeyboardInput = true;
     }
 
     public void GameOver()
